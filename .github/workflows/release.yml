@@ -84,6 +84,7 @@ jobs:
         repo_token: ${{ github.token }}
         tag: ${{ github.event.release.tag_name }}
         file: dist/**
+        file_glob: true
     - name: Mirror release to private repository
       run: |
         gh release create ${{ github.event.release.tag_name }} \
