@@ -8,7 +8,68 @@ permissions:
   contents: write
 
 jobs:
-  build:
+  build-bootloader:
+    runs-on: ${{ matrix.runner }}
+    strategy:
+      matrix:
+        include:
+          - os: windows
+            arch: x64
+            runner: windows-latest
+            artifact-suffix: win-x64
+          - os: linux
+            arch: x64
+            runner: ubuntu-latest
+            artifact-suffix: linux-x64
+#          - os: linux
+#            arch: arm64
+#            runner: ubuntu-24.04-arm
+#            artifact-suffix: linux-arm64
+          - os: macos
+            arch: x64
+            runner: macos-15-intel
+            artifact-suffix: macos-x64
+          - os: macos
+            arch: arm64
+            runner: macos-15
+            artifact-suffix: macos-arm64
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        repository: CatCoreV/bootloader
+        submodules: 'true'
+        token: ${{ secrets.PAT_TOKEN }}
+    - name: Use Node.js 20.x
+      uses: actions/setup-node@v4
+      with:
+        node-version: 20.x
+        architecture: ${{ matrix.arch == 'x86' && 'x86' || 'x64' }}
+    - name: Install dependencies (Windows)
+      if: matrix.os == 'windows'
+      run: Get-ChildItem -Path . -Recurse -Filter package.json | Where-Object { $_.FullName -notlike '*\node_modules\*' } | ForEach-Object { Push-Location $_.DirectoryName; npm install; Pop-Location }
+    - name: Install dependencies (Linux/MacOS)
+      if: matrix.os == 'linux' || matrix.os == 'macos'
+      run: find . -name "package.json" -execdir npm install \;
+    - name: Download NW (Windows)
+      if: matrix.os == 'windows'
+      run: kernel-compiler/download_nw_windows.bat ${{ matrix.arch }}
+    - name: Download NW (Linux)
+      if: matrix.os == 'linux'
+      run: chmod +x kernel-compiler/download_nw_linux.sh && ./kernel-compiler/download_nw_linux.sh ${{ matrix.arch }}
+    - name: Download NW (MacOS)
+      if: matrix.os == 'macos'
+      run: chmod +x kernel-compiler/download_nw_macos.sh && ./kernel-compiler/download_nw_macos.sh ${{ matrix.arch }}
+    - name: Build
+      run: npm run build -- ${{ matrix.arch }}
+      env:
+        CATCORE_KERNELSIGN_KEY: ${{ secrets.CATCORE_KERNELSIGN_KEY }}
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: dist-${{ matrix.artifact-suffix }}
+        path: dist/*
+        retention-days: 1
+  build-kernel:
     runs-on: ${{ matrix.runner }}
     strategy:
       matrix:
@@ -70,7 +131,7 @@ jobs:
         path: dist/*
         retention-days: 1
   release:
-    needs: build
+    needs: [build-bootloader, build-kernel]
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
@@ -85,7 +146,14 @@ jobs:
         tag: ${{ github.event.release.tag_name }}
         file: dist/**/*
         file_glob: true
-    - name: Mirror release to private repository
+    - name: Mirror bootloader release to private repository
+      run: |
+        gh release create ${{ github.event.release.tag_name }} \
+          --repo CatCoreV/bootloader \
+          --title "${{ github.event.release.name }}" \
+          --notes "${{ github.event.release.body }}" \
+          --draft=false
+    - name: Mirror kernel release to private repository
       run: |
         gh release create ${{ github.event.release.tag_name }} \
           --repo CatCoreV/kernel \
