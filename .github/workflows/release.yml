@@ -92,4 +92,4 @@ jobs:
           --notes "${{ github.event.release.body }}" \
           --draft=false
       env:
-        GH_TOKEN: ${{ secrets.RELEASE_PAT_TOKEN }}
+        GH_TOKEN: ${{ secrets.PAT_TOKEN }}
