@@ -168,7 +168,8 @@ jobs:
           --repo CatCoreV/bootloader \
           --title "${{ github.event.release.name }}" \
           --notes "${{ github.event.release.body }}" \
-          --draft=${{ github.event.release.draft }}
+          --draft=${{ github.event.release.draft }} \
+          --prerelease=${{ github.event.release.prerelease }}
       env:
         GH_TOKEN: ${{ secrets.PAT_TOKEN }}
     - name: Mirror kernel release to private repository
@@ -177,6 +178,7 @@ jobs:
           --repo CatCoreV/kernel \
           --title "${{ github.event.release.name }}" \
           --notes "${{ github.event.release.body }}" \
-          --draft=${{ github.event.release.draft }}
+          --draft=${{ github.event.release.draft }} \
+          --prerelease=${{ github.event.release.prerelease }}
       env:
         GH_TOKEN: ${{ secrets.PAT_TOKEN }}
