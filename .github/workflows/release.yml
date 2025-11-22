@@ -105,6 +105,15 @@ jobs:
       with:
         node-version: 20.x
         architecture: ${{ matrix.arch == 'x86' && 'x86' || 'x64' }}
+    - name: Set version (Windows)
+      if: matrix.os == 'windows'
+      run: |
+        (Get-Content package.json) `
+          -replace '0.0.1', "$env:RELEASE_TAG" `
+          | Set-Content package.json
+    - name: Set version (Linux/MacOS)
+      if: matrix.os == 'linux' || matrix.os == 'macos'
+      run: sed -i 's/0.0.1/'"$RELEASE_TAG"'/g' package.json
     - name: Install dependencies (Windows)
       if: matrix.os == 'windows'
       run: Get-ChildItem -Path . -Recurse -Filter package.json | Where-Object { $_.FullName -notlike '*\node_modules\*' } | ForEach-Object { Push-Location $_.DirectoryName; npm install; Pop-Location }
