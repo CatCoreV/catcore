@@ -177,6 +177,6 @@ jobs:
           --repo CatCoreV/kernel \
           --title "${{ github.event.release.name }}" \
           --notes "${{ github.event.release.body }}" \
-          --draft=false
+          --draft=${{ github.event.release.draft }}
       env:
         GH_TOKEN: ${{ secrets.PAT_TOKEN }}
