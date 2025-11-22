@@ -113,9 +113,14 @@ jobs:
           | Set-Content package.json
       env:
         RELEASE_TAG: ${{ github.ref_name }}
-    - name: Set version (Linux/MacOS)
-      if: matrix.os == 'linux' || matrix.os == 'macos'
+    - name: Set version (Linux)
+      if: matrix.os == 'linux'
       run: sed -i 's/0.0.1/'"$RELEASE_TAG"'/g' package.json
+      env:
+        RELEASE_TAG: ${{ github.ref_name }}
+    - name: Set version (MacOS)
+      if: matrix.os == 'macos'
+      run: sed -i '' 's/0.0.1/'"$RELEASE_TAG"'/g' package.json
       env:
         RELEASE_TAG: ${{ github.ref_name }}
     - name: Install dependencies (Windows)
