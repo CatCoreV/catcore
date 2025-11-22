@@ -105,7 +105,15 @@ jobs:
       with:
         node-version: 20.x
         architecture: ${{ matrix.arch == 'x86' && 'x86' || 'x64' }}
-    - name: Strip 'v' from release tag
+    - name: Strip 'v' from release tag (Windows)
+      if: matrix.os == 'windows'
+      run: |
+        $ReleaseTag = $env:V_RELEASE_TAG.Substring(1)
+        echo "RELEASE_TAG=$ReleaseTag" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+      env:
+        V_RELEASE_TAG: ${{ github.ref_name }}
+    - name: Strip 'v' from release tag (Linux/MacOS)
+      if: matrix.os == 'linux' || matrix.os == 'macos'
       run: echo "RELEASE_TAG=${V_RELEASE_TAG#v}" >> $GITHUB_ENV
       env:
         V_RELEASE_TAG: ${{ github.ref_name }}
