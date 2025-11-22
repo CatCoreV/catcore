@@ -105,24 +105,22 @@ jobs:
       with:
         node-version: 20.x
         architecture: ${{ matrix.arch == 'x86' && 'x86' || 'x64' }}
+    - name: Strip 'v' from release tag
+      run: echo "RELEASE_TAG=${V_RELEASE_TAG#v}" >> $GITHUB_ENV
+      env:
+        V_RELEASE_TAG: ${{ github.ref_name }}
     - name: Set version (Windows)
       if: matrix.os == 'windows'
       run: |
         (Get-Content package.json) `
           -replace '0.0.1', "$env:RELEASE_TAG" `
           | Set-Content package.json
-      env:
-        RELEASE_TAG: ${{ github.ref_name }}
     - name: Set version (Linux)
       if: matrix.os == 'linux'
       run: sed -i 's/0.0.1/'"$RELEASE_TAG"'/g' package.json
-      env:
-        RELEASE_TAG: ${{ github.ref_name }}
     - name: Set version (MacOS)
       if: matrix.os == 'macos'
       run: sed -i '' 's/0.0.1/'"$RELEASE_TAG"'/g' package.json
-      env:
-        RELEASE_TAG: ${{ github.ref_name }}
     - name: Install dependencies (Windows)
       if: matrix.os == 'windows'
       run: Get-ChildItem -Path . -Recurse -Filter package.json | Where-Object { $_.FullName -notlike '*\node_modules\*' } | ForEach-Object { Push-Location $_.DirectoryName; npm install; Pop-Location }
