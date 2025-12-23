@@ -183,7 +183,7 @@ jobs:
           parent_dir=$(dirname "$kexts_dir")
           cd "$kexts_dir"
           zip -r ../kexts-${{ matrix.artifact-suffix }}.zip .
-          cd "$parent_dir"
+          cd "../../../$parent_dir"
           rm -rf kexts
         done
     - name: Upload binaries to release
