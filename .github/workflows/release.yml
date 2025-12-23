@@ -78,6 +78,10 @@ jobs:
             arch: x64
             runner: windows-latest
             artifact-suffix: win-x64
+          - os: windows
+            arch: x86
+            runner: windows-latest
+            artifact-suffix: win-x86
           - os: linux
             arch: x64
             runner: ubuntu-latest
@@ -139,11 +143,8 @@ jobs:
       if: matrix.os == 'windows'
       run: kernel-compiler/download_nw_windows.bat ${{ matrix.arch }}
     - name: Download NW (Linux)
-      if: matrix.os == 'linux'
-      run: chmod +x kernel-compiler/download_nw_linux.sh && ./kernel-compiler/download_nw_linux.sh ${{ matrix.arch }}
-    - name: Download NW (MacOS)
-      if: matrix.os == 'macos'
-      run: chmod +x kernel-compiler/download_nw_macos.sh && ./kernel-compiler/download_nw_macos.sh ${{ matrix.arch }}
+      if: matrix.os == 'linux' || matrix.os == 'macos'
+      run: chmod +x kernel-compiler/download_nw_unix.sh && ./kernel-compiler/download_nw_unix.sh ${{ matrix.arch }}
     - name: Build
       run: npm run build -- ${{ matrix.arch }}
       env:
