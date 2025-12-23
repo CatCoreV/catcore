@@ -182,9 +182,10 @@ jobs:
         cd dist
         find . -type d -name kexts | while read kexts_dir; do
           parent_dir=$(dirname "$kexts_dir")
+          suffix=$(echo "$parent_dir" | sed 's/.*dist-\(.*\)-kernel/\1/')
           (
             cd "$kexts_dir"
-            zip -r "../../$parent_dir/kexts-${{ matrix.artifact-suffix }}.zip" .
+            zip -r "../../$parent_dir/kexts-$suffix.zip" .
             cd ../..
             rm -rf "$kexts_dir"
           )
