@@ -53,12 +53,9 @@ jobs:
     - name: Download NW (Windows)
       if: matrix.os == 'windows'
       run: kernel-compiler/download_nw_windows.bat ${{ matrix.arch }}
-    - name: Download NW (Linux)
-      if: matrix.os == 'linux'
-      run: chmod +x kernel-compiler/download_nw_linux.sh && ./kernel-compiler/download_nw_linux.sh ${{ matrix.arch }}
-    - name: Download NW (MacOS)
-      if: matrix.os == 'macos'
-      run: chmod +x kernel-compiler/download_nw_macos.sh && ./kernel-compiler/download_nw_macos.sh ${{ matrix.arch }}
+    - name: Download NW (Linux/MacOS)
+      if: matrix.os == 'linux' || matrix.os == 'macos'
+      run: chmod +x kernel-compiler/download_nw_unix.sh && ./kernel-compiler/download_nw_unix.sh ${{ matrix.arch }}
     - name: Build
       run: npm run build -- ${{ matrix.arch }}
       env:
@@ -142,7 +139,7 @@ jobs:
     - name: Download NW (Windows)
       if: matrix.os == 'windows'
       run: kernel-compiler/download_nw_windows.bat ${{ matrix.arch }}
-    - name: Download NW (Linux)
+    - name: Download NW (Linux/MacOS)
       if: matrix.os == 'linux' || matrix.os == 'macos'
       run: chmod +x kernel-compiler/download_nw_unix.sh && ./kernel-compiler/download_nw_unix.sh ${{ matrix.arch }}
     - name: Build
