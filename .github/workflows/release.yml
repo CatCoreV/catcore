@@ -179,12 +179,17 @@ jobs:
       run: cp catcore.d.ts dist/catcore.d.ts
     - name: Package kexts
       run: |
-        for kexts_dir in $(find dist -type d -name kexts); do
-          cd "$kexts_dir"
-          zip -r ../kexts-${{ matrix.artifact-suffix }}.zip .
-          cd ..
-          rm -rf kexts
+        cd dist
+        find . -type d -name kexts | while read kexts_dir; do
+          parent_dir=$(dirname "$kexts_dir")
+          (
+            cd "$kexts_dir"
+            zip -r "../../$parent_dir/kexts-${{ matrix.artifact-suffix }}.zip" .
+            cd ../..
+            rm -rf "$kexts_dir"
+          )
         done
+        cd ..
     - name: Upload binaries to release
       uses: svenstaro/upload-release-action@v2
       with:
