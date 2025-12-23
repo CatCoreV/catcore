@@ -180,10 +180,9 @@ jobs:
     - name: Package kexts
       run: |
         for kexts_dir in $(find dist -type d -name kexts); do
-          parent_dir=$(dirname "$kexts_dir")
           cd "$kexts_dir"
           zip -r ../kexts-${{ matrix.artifact-suffix }}.zip .
-          cd "../../../$parent_dir"
+          cd ..
           rm -rf kexts
         done
     - name: Upload binaries to release
