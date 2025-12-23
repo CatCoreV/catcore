@@ -25,6 +25,10 @@ jobs:
             arch: x64
             runner: ubuntu-latest
             artifact-suffix: linux-x64
+          - os: linux
+            arch: x86
+            runner: ubuntu-latest
+            artifact-suffix: linux-x86
 #          - os: linux
 #            arch: arm64
 #            runner: ubuntu-24.04-arm
@@ -87,6 +91,10 @@ jobs:
             arch: x64
             runner: ubuntu-latest
             artifact-suffix: linux-x64
+          - os: linux
+            arch: x86
+            runner: ubuntu-latest
+            artifact-suffix: linux-x86
 #          - os: linux
 #            arch: arm64
 #            runner: ubuntu-24.04-arm
