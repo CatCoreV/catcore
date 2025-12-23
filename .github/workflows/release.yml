@@ -51,7 +51,6 @@ jobs:
       uses: actions/setup-node@v4
       with:
         node-version: 20.x
-        architecture: ${{ matrix.arch == 'x86' && 'x86' || 'x64' }}
     - name: Install dependencies (Windows)
       if: matrix.os == 'windows'
       run: Get-ChildItem -Path . -Recurse -Filter package.json | Where-Object { $_.FullName -notlike '*\node_modules\*' } | ForEach-Object { Push-Location $_.DirectoryName; npm install; Pop-Location }
@@ -117,7 +116,6 @@ jobs:
       uses: actions/setup-node@v4
       with:
         node-version: 20.x
-        architecture: ${{ matrix.arch == 'x86' && 'x86' || 'x64' }}
     - name: Strip 'v' from release tag (Windows)
       if: matrix.os == 'windows'
       run: |
