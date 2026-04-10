@@ -203,7 +203,7 @@ jobs:
         gh release create ${{ github.event.release.tag_name }} \
           --repo CatCoreV/bootloader \
           --title "${{ github.event.release.name }}" \
-          --notes "${{ github.event.release.body }}" \
+          --notes '${{ github.event.release.body }}' \
           --draft=${{ github.event.release.draft }} \
           --prerelease=${{ github.event.release.prerelease }}
       env:
@@ -213,7 +213,7 @@ jobs:
         gh release create ${{ github.event.release.tag_name }} \
           --repo CatCoreV/kernel \
           --title "${{ github.event.release.name }}" \
-          --notes "${{ github.event.release.body }}" \
+          --notes '${{ github.event.release.body }}' \
           --draft=${{ github.event.release.draft }} \
           --prerelease=${{ github.event.release.prerelease }}
       env:
