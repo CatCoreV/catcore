@@ -21,6 +21,10 @@ jobs:
             arch: x86
             runner: windows-latest
             artifact-suffix: w-x86
+          - os: windows
+            arch: arm64
+            runner: windows-11-arm
+            artifact-suffix: w-arm64
           - os: linux
             arch: x64
             runner: ubuntu-latest
@@ -58,7 +62,7 @@ jobs:
       run: kernel-compiler/download_nw_windows.bat ${{ matrix.arch }}
     - name: Download NW (Linux/MacOS)
       if: matrix.os == 'linux' || matrix.os == 'macos'
-      run: chmod +x kernel-compiler/download_nw_unix.sh && ./kernel-compiler/download_nw_unix.sh ${{ matrix.arch }}
+      run: ./kernel-compiler/download_nw_unix.sh ${{ matrix.arch }}
     - name: Build
       run: npm run build -- ${{ matrix.arch }}
       env:
@@ -82,6 +86,10 @@ jobs:
             arch: x86
             runner: windows-latest
             artifact-suffix: w-x86
+          - os: windows
+            arch: arm64
+            runner: windows-11-arm
+            artifact-suffix: w-arm64
           - os: linux
             arch: x64
             runner: ubuntu-latest
@@ -143,7 +151,7 @@ jobs:
       run: kernel-compiler/download_nw_windows.bat ${{ matrix.arch }}
     - name: Download NW (Linux/MacOS)
       if: matrix.os == 'linux' || matrix.os == 'macos'
-      run: chmod +x kernel-compiler/download_nw_unix.sh && ./kernel-compiler/download_nw_unix.sh ${{ matrix.arch }}
+      run: ./kernel-compiler/download_nw_unix.sh ${{ matrix.arch }}
     - name: Build
       run: npm run build -- ${{ matrix.arch }}
       env:
